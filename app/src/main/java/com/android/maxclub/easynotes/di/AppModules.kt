@@ -24,7 +24,7 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun provideNoteDao(noteDatabase: NoteDatabase): NoteDao =
-        noteDatabase.noteDao()
+        noteDatabase.noteDao
 }
 
 @Module
@@ -33,5 +33,5 @@ object RepositoryModule {
     @Singleton
     @Provides
     fun provideNoteRepository(noteDao: NoteDao): NoteRepository =
-        NoteRepositoryImpl(noteDao)
+        NoteRepositoryImpl(noteDao, Dispatchers.IO)
 }

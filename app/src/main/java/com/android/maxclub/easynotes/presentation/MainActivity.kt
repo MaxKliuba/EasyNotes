@@ -1,16 +1,17 @@
 package com.android.maxclub.easynotes.presentation
 
-import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.android.maxclub.easynotes.presentation.notes.NotesScreen
+import com.android.maxclub.easynotes.presentation.util.Screen
 import com.android.maxclub.easynotes.ui.theme.EasyNotesTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -20,35 +21,35 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             EasyNotesTheme {
-                Greeting("Android")
+                Surface(
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    val navController = rememberNavController()
+                    NavHost(
+                        navController = navController,
+                        startDestination = Screen.NotesScreen.route,
+                    ) {
+                        composable(route = Screen.NotesScreen.route) {
+                            NotesScreen(navController = navController)
+                        }
+                        composable(
+                            route = "${Screen.AddEditNoteScreen.route}?noteId={noteId}",
+                            arguments = listOf(
+                                navArgument(name = "noteId") {
+                                    type = NavType.IntType
+                                    defaultValue = -1
+                                },
+                                navArgument(name = "noteId") {
+                                    type = NavType.IntType
+                                    defaultValue = -1
+                                },
+                            ),
+                        ) {
+                            // TODO
+                        }
+                    }
+                }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background,
-        contentColor = MaterialTheme.colorScheme.onBackground,
-    ) {
-        Text(text = "Hello $name!")
-    }
-}
-
-@Preview(
-    name = "Light Mode",
-    showBackground = true
-)
-@Preview(
-    name = "Dark Mode",
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true
-)
-@Composable
-fun DefaultPreview() {
-    EasyNotesTheme {
-        Greeting("Android")
     }
 }

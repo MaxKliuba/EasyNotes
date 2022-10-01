@@ -3,7 +3,6 @@ package com.android.maxclub.easynotes.ui.theme
 import androidx.compose.ui.graphics.Color
 
 val YellowHot50 = Color(0xFFFBBC04)
-val YellowHot85 = Color(0xFFfdebb4)
 val DarkGray = Color(0xFF202020)
 val Gray = Color(0xFF404040)
 

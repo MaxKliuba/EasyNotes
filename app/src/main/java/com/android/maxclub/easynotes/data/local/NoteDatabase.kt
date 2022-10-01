@@ -12,7 +12,7 @@ import com.android.maxclub.easynotes.data.local.entity.NoteEntity
     exportSchema = false,
 )
 abstract class NoteDatabase : RoomDatabase() {
-    abstract fun noteDao(): NoteDao
+    abstract val noteDao: NoteDao
 
     companion object {
         const val DATABASE_NAME = "notes_db"
