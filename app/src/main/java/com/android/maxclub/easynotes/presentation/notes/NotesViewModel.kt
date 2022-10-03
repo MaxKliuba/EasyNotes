@@ -4,10 +4,11 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.android.maxclub.easynotes.domain.model.Note
 import com.android.maxclub.easynotes.domain.usecase.NoteUseCases
 import com.android.maxclub.easynotes.domain.util.NoteOrder
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -26,7 +27,7 @@ class NotesViewModel @Inject constructor(
     private var getNotesJob: Job? = null
 
     init {
-        fetchNotes()
+        getNotes()
     }
 
     fun onEvent(event: NotesEvent) {
@@ -37,31 +38,23 @@ class NotesViewModel @Inject constructor(
                 )
             }
             is NotesEvent.OnChangeOrder -> {
-                fetchNotes(noteOrder = event.noteOrder)
+                getNotes(noteOrder = event.noteOrder)
             }
             is NotesEvent.OnRefreshNotes -> {
-                fetchNotes()
+                getNotes()
             }
             is NotesEvent.OnCreateNote -> {
                 viewModelScope.launch {
-                    // TODO
-                    // _uiEvent.emit(NotesUiEvent.OnShowNote())
-                    noteUseCases.addNote(
-                        Note(
-                            title = "Title",
-                            content = "Content...",
-                            color = Note.COLORS[0],
-                        )
-                    )
+                    _uiEvent.emit(NotesUiEvent.OnCreateNote)
                 }
             }
             is NotesEvent.OnClickNote -> {
                 viewModelScope.launch {
-                    _uiEvent.emit(NotesUiEvent.OnShowNote(event.note.id))
+                    _uiEvent.emit(NotesUiEvent.OnShowNote(event.note))
                 }
             }
             is NotesEvent.OnDeleteNote -> {
-                viewModelScope.launch {
+                CoroutineScope(Dispatchers.IO).launch {
                     noteUseCases.deleteNote(event.note)
                     _uiEvent.emit(NotesUiEvent.OnShowDeleteMessage(event.note))
                 }
@@ -74,7 +67,7 @@ class NotesViewModel @Inject constructor(
         }
     }
 
-    private fun fetchNotes(noteOrder: NoteOrder = uiState.value.noteOrder) {
+    private fun getNotes(noteOrder: NoteOrder = uiState.value.noteOrder) {
         getNotesJob?.cancel()
         getNotesJob = noteUseCases.getNotes(noteOrder)
             .onStart {

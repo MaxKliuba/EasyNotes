@@ -21,9 +21,10 @@ private val DarkColorScheme = darkColorScheme(
     onPrimary = Color.Black,
     background = Color.Black,
     onBackground = Color.White,
-    surface = Gray,
-    onSurface = Color.White,
-    onTertiary = Color.Black,
+    surface = Violet,
+    onSurface = Color.Black,
+    secondaryContainer = DarkGray,
+    onSecondaryContainer = Color.White,
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -31,9 +32,10 @@ private val LightColorScheme = lightColorScheme(
     onPrimary = Color.White,
     background = Color.White,
     onBackground = Color.Black,
-    surface = Color.White,
+    surface = Violet,
     onSurface = Color.Black,
-    onTertiary = Color.Black,
+    secondaryContainer = LightGray,
+    onSecondaryContainer = Color.Black,
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -64,7 +66,7 @@ fun EasyNotesTheme(
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
-            (view.context as Activity).window.statusBarColor = colorScheme.surface.toArgb()
+            (view.context as Activity).window.statusBarColor = colorScheme.background.toArgb()
             ViewCompat.getWindowInsetsController(view)?.isAppearanceLightStatusBars = !darkTheme
         }
     }

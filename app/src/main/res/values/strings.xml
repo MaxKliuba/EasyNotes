@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">EasyNotes</string>
-    <string name="pattern">MMMM dd yyyy, HH:mm:ss</string>
+    <string name="pattern">MMMM dd yyyy, HH:mm</string>
     <string name="language">en</string>
     <string name="country" />
 
+    <string name="empty_list_text">No notes yet</string>
     <string name="add_note_text">Add note</string>
     <string name="sort_notes_text">Sort notes</string>
     <string name="sort_by_date_text">Date</string>
@@ -16,4 +17,8 @@
     <string name="undo_text">UNDO</string>
     <string name="error_message_text">Oops! Something went wrong</string>
     <string name="retry_text">RETRY</string>
+    <string name="navigate_up_text">Navigate up</string>
+    <string name="select_color_text">Select a color</string>
+    <string name="title_hint_text">Title</string>
+    <string name="content_hint_text">Note…</string>
 </resources>

@@ -7,7 +7,7 @@ import java.util.*
 
 fun formatDate(
     date: Date,
-    pattern: String = "MMMM dd yyyy, HH:mm:ss",
+    pattern: String = "MMMM dd yyyy, HH:mm",
     locale: Locale = Locale.getDefault(),
 ): String = SimpleDateFormat(pattern, locale)
     .format(date)

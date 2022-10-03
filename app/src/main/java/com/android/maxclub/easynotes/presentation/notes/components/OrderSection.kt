@@ -21,11 +21,15 @@ fun OrderSection(
         modifier = modifier
             .fillMaxWidth()
             .background(
-                color = MaterialTheme.colorScheme.surface,
+                color = MaterialTheme.colorScheme.background,
                 shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
             ),
     ) {
-        Row(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp)
+        ) {
             DefaultRadioButton(
                 text = stringResource(R.string.sort_by_date_text),
                 selected = noteOrder is NoteOrder.ByTimestamp,
@@ -45,7 +49,11 @@ fun OrderSection(
             )
         }
 
-        Row(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp)
+        ) {
             DefaultRadioButton(
                 text = stringResource(R.string.sort_ascending_text),
                 selected = !noteOrder.isDescending,

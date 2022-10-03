@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.android.maxclub.easynotes.presentation.add_edit_note.AddEditNoteScreen
 import com.android.maxclub.easynotes.presentation.notes.NotesScreen
 import com.android.maxclub.easynotes.presentation.util.Screen
 import com.android.maxclub.easynotes.ui.theme.EasyNotesTheme
@@ -39,13 +40,9 @@ class MainActivity : ComponentActivity() {
                                     type = NavType.IntType
                                     defaultValue = -1
                                 },
-                                navArgument(name = "noteId") {
-                                    type = NavType.IntType
-                                    defaultValue = -1
-                                },
                             ),
                         ) {
-                            // TODO
+                            AddEditNoteScreen(navController = navController)
                         }
                     }
                 }

@@ -1,6 +1,7 @@
 package com.android.maxclub.easynotes.presentation.notes.components
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -19,9 +20,11 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.graphics.ColorUtils
 import com.android.maxclub.easynotes.R
 import com.android.maxclub.easynotes.domain.model.Note
@@ -30,14 +33,20 @@ import com.android.maxclub.easynotes.domain.util.formatDate
 @Composable
 fun NoteItem(
     note: Note,
+    onClickNote: () -> Unit,
     onDeleteNote: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val cornerRadius = 16.dp
     val cutCornerSize = 32.dp
+    val textColor = Color(ColorUtils.blendARGB(note.color, Color.Black.toArgb(), 0.7f))
+    val labelColor = Color(ColorUtils.blendARGB(note.color, Color.Black.toArgb(), 0.4f))
 
     Box(modifier = modifier) {
-        Canvas(modifier = Modifier.matchParentSize()) {
+        Canvas(modifier = Modifier
+            .matchParentSize()
+            .clickable { onClickNote() }
+        ) {
             val clipPath = Path().apply {
                 lineTo(size.width - cutCornerSize.toPx(), 0f)
                 lineTo(size.width, cutCornerSize.toPx())
@@ -48,14 +57,14 @@ fun NoteItem(
 
             clipPath(clipPath) {
                 drawRoundRect(
-                    color = note.color,
+                    color = Color(note.color),
                     size = size,
                     cornerRadius = CornerRadius(cornerRadius.toPx())
                 )
                 drawRoundRect(
                     color = Color(
                         ColorUtils.blendARGB(
-                            note.color.toArgb(),
+                            note.color,
                             Color.Black.toArgb(),
                             0.2f
                         )
@@ -71,40 +80,44 @@ fun NoteItem(
                 .fillMaxSize()
                 .padding(16.dp),
         ) {
-            Text(
-                text = note.title,
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onTertiary,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = note.content,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onTertiary,
-                maxLines = 10,
-                overflow = TextOverflow.Ellipsis,
-                textAlign = TextAlign.Justify,
-            )
-            Spacer(modifier = Modifier.height(8.dp))
+            if (note.title.isNotEmpty()) {
+                Text(
+                    text = note.title,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = textColor,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+            if (note.content.isNotEmpty()) {
+                Text(
+                    text = note.content,
+                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp),
+                    color = textColor,
+                    maxLines = 10,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Justify,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
             Text(
                 text = formatDate(note.timestamp, LocalContext.current),
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onTertiary,
+                color = labelColor,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.fillMaxWidth()
             )
         }
         IconButton(
             onClick = onDeleteNote,
-            modifier = Modifier.align(alignment = Alignment.BottomEnd)
+            modifier = Modifier.align(alignment = Alignment.BottomEnd),
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_baseline_delete_24),
                 contentDescription = stringResource(R.string.delete_note_text),
-                tint = MaterialTheme.colorScheme.onTertiary
+                tint = textColor,
             )
         }
     }

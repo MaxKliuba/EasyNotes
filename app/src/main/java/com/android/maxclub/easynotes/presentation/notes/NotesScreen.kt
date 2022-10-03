@@ -2,20 +2,22 @@ package com.android.maxclub.easynotes.presentation.notes
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.android.maxclub.easynotes.R
+import com.android.maxclub.easynotes.presentation.notes.components.EmptyListPlaceholder
 import com.android.maxclub.easynotes.presentation.notes.components.NoteItem
 import com.android.maxclub.easynotes.presentation.notes.components.OrderSection
 import com.android.maxclub.easynotes.presentation.util.Screen
@@ -28,13 +30,21 @@ fun NotesScreen(
     navController: NavController,
     viewModel: NotesViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
     val state: NotesUiState by viewModel.uiState
     val snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
-    val context = LocalContext.current
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collectLatest { event ->
             when (event) {
+                is NotesUiEvent.OnCreateNote -> {
+                    navController.navigate(Screen.AddEditNoteScreen.route)
+                }
+                is NotesUiEvent.OnShowNote -> {
+                    navController.navigate(
+                        "${Screen.AddEditNoteScreen.route}?noteId=${event.note.id}"
+                    )
+                }
                 is NotesUiEvent.OnShowDeleteMessage -> {
                     snackbarHostState.showSnackbar(
                         message = context.getString(R.string.note_deleted_message_text),
@@ -45,12 +55,6 @@ fun NotesScreen(
                             viewModel.onEvent(NotesEvent.OnRestoreNote(event.deletedNote))
                         }
                     }
-                }
-                is NotesUiEvent.OnShowNote -> {
-                    // TODO
-//                    navController.navigate(
-//                        "${Screen.AddEditNoteScreen.route}?noteId=${event.noteId}"
-//                    )
                 }
                 is NotesUiEvent.OnShowErrorMessage -> {
                     snackbarHostState.showSnackbar(
@@ -70,7 +74,10 @@ fun NotesScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = stringResource(id = R.string.app_name))
+                    Text(
+                        text = stringResource(id = R.string.app_name),
+                        fontWeight = FontWeight.Bold,
+                    )
                 },
                 navigationIcon = {
                     IconButton(onClick = {}) {
@@ -91,18 +98,18 @@ fun NotesScreen(
                     }
                 },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
+                    containerColor = MaterialTheme.colorScheme.background,
                     navigationIconContentColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface,
-                    actionIconContentColor = MaterialTheme.colorScheme.onSurface,
+                    titleContentColor = MaterialTheme.colorScheme.onBackground,
+                    actionIconContentColor = MaterialTheme.colorScheme.onBackground,
                 ),
             )
         },
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState) { data ->
                 Snackbar(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    contentColor = MaterialTheme.colorScheme.onSurface,
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
                     actionColor = MaterialTheme.colorScheme.primary,
                     snackbarData = data,
                 )
@@ -120,50 +127,57 @@ fun NotesScreen(
             }
         }
     ) { paddingValues ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            AnimatedVisibility(
-                visible = state.isLoading,
-            ) {
-                LinearProgressIndicator(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.primary,
-                    trackColor = MaterialTheme.colorScheme.surface,
-                )
+            if (!state.isLoading && state.notes.isEmpty()) {
+                EmptyListPlaceholder(modifier = Modifier.align(Alignment.Center))
             }
 
-            AnimatedVisibility(
-                visible = state.isOrderSectionVisible,
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
             ) {
-                OrderSection(
-                    noteOrder = state.noteOrder,
-                    onChangeOrder = { noteOrder ->
-                        viewModel.onEvent(NotesEvent.OnChangeOrder(noteOrder))
-                    },
-                )
-            }
-
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(16.dp),
-            ) {
-                items(
-                    items = state.notes,
-                    key = { note -> note.id }
-                ) { note ->
-                    NoteItem(
-                        note = note,
-                        onDeleteNote = { viewModel.onEvent(NotesEvent.OnDeleteNote(note)) },
+                AnimatedVisibility(visible = state.isLoading) {
+                    LinearProgressIndicator(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { viewModel.onEvent(NotesEvent.OnClickNote(note)) }
-                            .animateItemPlacement(),
+                            .fillMaxWidth(),
+                        color = MaterialTheme.colorScheme.primary,
+                        trackColor = MaterialTheme.colorScheme.background,
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
+                }
+
+                AnimatedVisibility(visible = state.isOrderSectionVisible) {
+                    OrderSection(
+                        noteOrder = state.noteOrder,
+                        onChangeOrder = { noteOrder ->
+                            viewModel.onEvent(NotesEvent.OnChangeOrder(noteOrder))
+                        },
+                    )
+                }
+
+                AnimatedVisibility(visible = state.notes.isNotEmpty()) {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(16.dp),
+                    ) {
+                        items(
+                            items = state.notes,
+                            key = { note -> note.id }
+                        ) { note ->
+                            NoteItem(
+                                note = note,
+                                onClickNote = { viewModel.onEvent(NotesEvent.OnClickNote(note)) },
+                                onDeleteNote = { viewModel.onEvent(NotesEvent.OnDeleteNote(note)) },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .animateItemPlacement(),
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
+                    }
                 }
             }
         }
