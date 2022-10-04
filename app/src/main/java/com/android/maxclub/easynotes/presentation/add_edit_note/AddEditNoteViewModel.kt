@@ -30,7 +30,7 @@ class AddEditNoteViewModel @Inject constructor(
                 note = Note(
                     title = "",
                     content = "",
-                    color = Note.COLORS.random(),
+                    color = Note.COLORS.first(),
                 ).also { initNote = it },
                 isColorSectionVisible = true,
             )

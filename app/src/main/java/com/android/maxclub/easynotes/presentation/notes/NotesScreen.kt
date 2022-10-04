@@ -1,6 +1,6 @@
 package com.android.maxclub.easynotes.presentation.notes
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.*
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -132,8 +132,13 @@ fun NotesScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            if (!state.isLoading && state.notes.isEmpty()) {
-                EmptyListPlaceholder(modifier = Modifier.align(Alignment.Center))
+            AnimatedVisibility(
+                visible = !state.isLoading && state.notes.isEmpty(),
+                enter = fadeIn(),
+                exit = fadeOut(),
+                modifier = Modifier.align(Alignment.Center),
+            ) {
+                EmptyListPlaceholder()
             }
 
             Column(
@@ -149,7 +154,11 @@ fun NotesScreen(
                     )
                 }
 
-                AnimatedVisibility(visible = state.isOrderSectionVisible) {
+                AnimatedVisibility(
+                    visible = state.isOrderSectionVisible,
+                    enter = expandVertically(),
+                    exit = shrinkVertically(),
+                ) {
                     OrderSection(
                         noteOrder = state.noteOrder,
                         onChangeOrder = { noteOrder ->

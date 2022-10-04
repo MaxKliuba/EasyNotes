@@ -1,5 +1,6 @@
 package com.android.maxclub.easynotes.presentation.add_edit_note
 
+import androidx.compose.animation.*
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.android.maxclub.easynotes.R
+import com.android.maxclub.easynotes.presentation.add_edit_note.components.ColorSection
 import com.android.maxclub.easynotes.presentation.add_edit_note.components.NoteComponent
 
 @Suppress("OPT_IN_IS_NOT_ENABLED")
@@ -67,18 +69,36 @@ fun AddEditNoteScreen(
                 .padding(paddingValues)
         ) {
             state.let { state ->
-                when (state) {
-                    is AddEditNoteUiState.Loading -> {
-                        CircularProgressIndicator(
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                        )
+                AnimatedVisibility(
+                    visible = state is AddEditNoteUiState.Loading,
+                    enter = fadeIn(),
+                    exit = fadeOut(),
+                    modifier = Modifier.align(Alignment.Center),
+                ) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                }
+
+                Column(modifier = Modifier.fillMaxSize()) {
+                    AnimatedVisibility(
+                        visible = state.isColorSectionEnabled && state is AddEditNoteUiState.Success && state.isColorSectionVisible,
+                        enter = expandVertically(),
+                        exit = shrinkVertically(),
+                    ) {
+                        if (state is AddEditNoteUiState.Success) {
+                            ColorSection(
+                                noteColor = state.note.color,
+                                onChangeColor = { color ->
+                                    viewModel.onEvent(AddEditNoteEvent.OnChangeColor(color))
+                                }
+                            )
+                        }
                     }
-                    is AddEditNoteUiState.Success -> {
-                        Column(
+
+                    if (state is AddEditNoteUiState.Success) {
+                        Box(
                             modifier = Modifier
-                                .fillMaxSize()
                                 .verticalScroll(rememberScrollState())
                         ) {
                             NoteComponent(
