@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">EasyNotes</string>
+    <string name="pattern">d MMMM yyyy, HH:mm</string>
+    <string name="language">uk</string>
+    <string name="country">UA</string>
+
+    <string name="empty_list_text">Нотаток поки немає</string>
+    <string name="add_note_text">Додати нотатку</string>
+    <string name="sort_notes_text">Сортувати нотатки</string>
+    <string name="sort_by_date_text">Дата</string>
+    <string name="sort_by_color_text">Колір</string>
+    <string name="sort_by_title_text">Назва</string>
+    <string name="sort_ascending_text">За зростанням</string>
+    <string name="sort_descending_text">За спаданням</string>
+    <string name="delete_note_text">Видалити нотатку</string>
+    <string name="note_deleted_message_text">Нотатку видалено</string>
+    <string name="undo_text">СКАСУВАТИ</string>
+    <string name="error_message_text">Упс! Щось пішло не так</string>
+    <string name="retry_text">ПЕРЕЗАВАНТАЖИТИ</string>
+    <string name="navigate_up_text">Перейти вгору</string>
+    <string name="select_color_text">Вибрати колір</string>
+    <string name="selected_color_text">Вибраний колір</string>
+    <string name="title_hint_text">Назва</string>
+    <string name="content_hint_text">Нотатка…</string>
+</resources>
