@@ -9,7 +9,7 @@ import com.android.maxclub.easynotes.data.local.entity.NoteEntity
 @Database(
     entities = [NoteEntity::class],
     version = 1,
-    exportSchema = false,
+    exportSchema = true,
 )
 abstract class NoteDatabase : RoomDatabase() {
     abstract val noteDao: NoteDao
