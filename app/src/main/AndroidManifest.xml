@@ -12,9 +12,9 @@
         android:roundIcon="@mipmap/ic_new_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.EasyNotes"
-        tools:targetApi="33">
+        tools:targetApi="34">
         <activity
-            android:name=".presentation.MainActivity"
+            android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.EasyNotes"
             android:windowSoftInputMode="adjustResize">

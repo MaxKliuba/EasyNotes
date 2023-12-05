@@ -15,9 +15,8 @@
     <string name="sort_descending_text">За спаданням</string>
     <string name="delete_note_text">Видалити нотатку</string>
     <string name="note_deleted_message_text">Нотатку видалено</string>
-    <string name="undo_text">СКАСУВАТИ</string>
-    <string name="error_message_text">Упс! Щось пішло не так</string>
-    <string name="retry_text">ПЕРЕЗАВАНТАЖИТИ</string>
+    <string name="undo_text">Скасувати</string>
+
     <string name="navigate_up_text">Перейти вгору</string>
     <string name="select_color_text">Вибрати колір</string>
     <string name="selected_color_text">Вибраний колір</string>
